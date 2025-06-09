@@ -1,0 +1,15 @@
+packages:
+  github.com/bright-pentium/go-client-practice/internal/repository/user:  
+    interfaces:
+      IUserRepository:
+        config:
+          filename: "mock.go"
+          dir: "internal/repository/user"
+          mockname: "MockUserRepository"
+  github.com/bright-pentium/go-client-practice/internal/repository/client:  
+    interfaces:
+      IClientRepository:
+        config:
+          filename: "mock.go"
+          dir: "internal/repository/client"
+          mockname: "MockClientRepository"

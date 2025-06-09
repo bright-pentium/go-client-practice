@@ -1,0 +1,494 @@
+basePath: /
+definitions:
+  controller.ClientLoginReponse:
+    properties:
+      access_token:
+        type: string
+    type: object
+  controller.ClientLoinRequest:
+    properties:
+      id:
+        example: 6cc2b688-1246-4a62-a293-dae7e67d6097
+        type: string
+      secret:
+        example: o44z4KUzru7uW4jtzxVt84Ma8f76Mnwj
+        type: string
+    type: object
+  controller.ClientResponse:
+    properties:
+      client:
+        items:
+          $ref: '#/definitions/domain.Client'
+        type: array
+    type: object
+  controller.CreateClientReponse:
+    properties:
+      id:
+        example: 11111111-2222-4444-3333-555555555555
+        type: string
+      scope:
+        example:
+        - '*'
+        items:
+          $ref: '#/definitions/domain.Permission'
+        type: array
+      secret:
+        example: o44z4KUzru7uW4jtzxVt84Ma8f76Mnwj
+        type: string
+      userId:
+        example: 11111111-2222-4444-3333-555555555555
+        type: string
+    type: object
+  controller.CreateClientRequest:
+    properties:
+      scope:
+        example:
+        - resource:create
+        items:
+          $ref: '#/definitions/domain.Permission'
+        minItems: 1
+        type: array
+    required:
+    - scope
+    type: object
+  controller.CreateUserRequest:
+    properties:
+      account:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - account
+    - name
+    - password
+    type: object
+  controller.UpdateClientRequest:
+    properties:
+      scope:
+        example:
+        - resource:create
+        items:
+          $ref: '#/definitions/domain.Permission'
+        minItems: 1
+        type: array
+    required:
+    - scope
+    type: object
+  controller.UpdateUserRequest:
+    properties:
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  controller.UserLoginRequest:
+    properties:
+      account:
+        type: string
+      password:
+        type: string
+    required:
+    - account
+    - password
+    type: object
+  controller.UserLoginResponse:
+    properties:
+      access_token:
+        type: string
+    required:
+    - access_token
+    type: object
+  domain.Client:
+    properties:
+      id:
+        example: 11111111-2222-4444-3333-555555555555
+        type: string
+      scope:
+        example:
+        - '*'
+        items:
+          $ref: '#/definitions/domain.Permission'
+        type: array
+      userId:
+        example: 11111111-2222-4444-3333-555555555555
+        type: string
+    type: object
+  domain.Permission:
+    enum:
+    - '*'
+    - resource:create
+    type: string
+    x-enum-varnames:
+    - PermAll
+    - PermCreateResource
+  domain.Resource:
+    properties:
+      id:
+        example: 11111111-2222-4444-3333-555555555555
+        type: string
+    type: object
+  domain.User:
+    properties:
+      account:
+        example: johndoe123
+        type: string
+      id:
+        example: 11111111-2222-4444-3333-555555555555
+        type: string
+      name:
+        example: John Doe
+        type: string
+    type: object
+  echo.HTTPError:
+    properties:
+      message: {}
+    type: object
+info:
+  contact: {}
+  description: API documentation
+  title: My Echo API
+  version: "1.0"
+paths:
+  /admin/users:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user.
+      parameters:
+      - description: User creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/domain.User'
+        "400":
+          description: Bad Requests
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Create a User
+      tags:
+      - admin
+  /admin/users/{user-id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user by their ID.
+      parameters:
+      - description: User ID
+        in: path
+        name: user-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Delete User by ID
+      tags:
+      - admin
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a user by their ID.
+      parameters:
+      - description: User ID
+        in: path
+        name: user-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/domain.User'
+        "400":
+          description: Bad Requests
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Get User by ID
+      tags:
+      - admin
+    patch:
+      consumes:
+      - application/json
+      description: Update a user by their ID.
+      parameters:
+      - description: User ID
+        in: path
+        name: user-id
+        required: true
+        type: string
+      - description: Update user request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/domain.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Update User by ID
+      tags:
+      - admin
+  /clients:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all clients associated with user ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/controller.ClientResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      security:
+      - Bearer: []
+      summary: List Clients by User ID
+      tags:
+      - client
+    post:
+      consumes:
+      - application/json
+      description: Creates a new client associated with the authenticated user.
+      parameters:
+      - description: Create Client Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.CreateClientRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/controller.CreateClientReponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      security:
+      - Bearer: []
+      summary: Create Client
+      tags:
+      - client
+  /clients/{client-id}:
+    patch:
+      consumes:
+      - application/json
+      description: Update a client with scopes.
+      parameters:
+      - description: Update Client Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.UpdateClientRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/domain.Client'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Update Client
+      tags:
+      - client
+  /clients/login:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new client associated with the authenticated user.
+      parameters:
+      - description: Create Client Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.ClientLoinRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/controller.ClientLoginReponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Create Client
+      tags:
+      - client
+  /resources:
+    post:
+      consumes:
+      - application/json
+      description: Create Resource
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/domain.Resource'
+        "400":
+          description: Bad Requests
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      security:
+      - Bearer: []
+      summary: Create Resource
+      tags:
+      - resourece
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: User Login
+      parameters:
+      - description: User Login Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.UserLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/controller.UserLoginResponse'
+        "400":
+          description: Bad Requests
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: User login
+      tags:
+      - user
+schemes:
+- http
+securityDefinitions:
+  Bearer:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
